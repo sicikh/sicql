@@ -1,0 +1,23 @@
+[workspace]
+members = ["sicql-fs", "sicql-engine", "sicql-compiler"]
+
+[workspace.package]
+version = "0.1.0"
+authors = ["sic!kh <kirill.lukashev.sic@gmail.com>"]
+edition = "2021"
+repository = "https://github.com/sicikh/sicql"
+license = "MIT"
+
+[package]
+name = "sicql"
+description = "Simple but feature-rich SQL database created for studying purposes"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[dependencies]
+sicql-compiler = { path = "sicql-compiler" }
+sicql-fs = { path = "sicql-fs" }
+sicql-engine = { path = "sicql-engine" }
