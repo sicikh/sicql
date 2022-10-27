@@ -4,7 +4,8 @@ use sicql_fs::mult;
 
 fn main() {
     println!("Hello, world!");
-    println!("{}, {}, {}", add(1, 2), remove(2, 1), mult(2, 3))
+    println!("{}, {}, {}", add(1, 2), remove(2, 1), mult(2, 3));
+    println!("{}", add_one(1, 5));
 }
 
 fn add_one(left: usize, right: usize) -> usize {
