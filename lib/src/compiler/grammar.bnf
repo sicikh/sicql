@@ -1,0 +1,203 @@
+{
+    // Only for proper JB-plugin work
+    tokens = [
+        integer="regexp:\d+"
+        float="regexp:[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"
+        word="regexp:\w+"
+        // wtf (._.)
+        string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\'|\\)*\")"
+        // just the most common regexp
+    ]
+}
+
+sql
+    ::= query
+    //  | 'EXPLAIN' explanation query
+    // TODO: Add support for compiler explanation
+      ;
+
+// explanation
+//    ::= 'LEXER'
+//      | 'PARSER'
+//      | 'CODEGEN'
+//      ;
+
+query
+    ::= 'BEGIN WRITE TRANSACTION;' (statement ';')+ 'COMMIT' ';'?
+      | 'BEGIN READ TRANSACTION;' (select ';')+ 'COMMIT' ';'?
+      | statement ';'
+      ;
+
+statement
+    ::= select
+      | create
+      | drop
+      | insert
+      | update
+      | delete
+      ;
+
+select
+    ::= 'SELECT' result_columns 'FROM' from_body where_clause?
+      ;
+
+create
+    ::= 'CREATE' 'TABLE' table_existence? '(' column_definition (',' column_definition)* ')'
+      ;
+
+drop
+    ::= 'DROP' 'TABLE' table_existence? table_name
+      ;
+
+insert
+    ::= 'INSERT' 'INTO' table_name '(' column_name (',' column_name)* ')' 'VALUES' literal (',' literal)*
+      ;
+
+update
+    ::= 'UPDATE' table_name 'SET' column_name '=' literal (',' column_name '=' literal)* where_clause
+      ;
+
+delete
+    ::= 'DELETE' 'FROM' table_name where_clause
+      ;
+
+table_existence
+    ::= 'IF' 'NOT' 'EXISTS'
+      ;
+
+column_definition
+    ::= column_name type
+//      | column_name primary_key
+      ;
+
+// primary_key
+//    ::= 'INTEGER' 'PRIMARY' 'KEY'
+//      ;
+// TODO: Add support for aliasing `rowid` by `INTEGER PRIMARY KEY` column
+
+type
+    ::= 'VARCHAR' '(' number ')'
+      | 'FLOAT'
+      | 'INTEGER'
+      | 'BOOLEAN'
+      ;
+
+from_body
+    ::= table_or_subquery // (',' table_or_subquery)* TODO: Add support for cross join
+      | join_clause
+      ;
+
+table_or_subquery
+    ::= table_name alias?
+//      | '(' select ')' alias?
+//      | '(' table_or_subquery (',' table_or_subquery)* ')'
+//      | '(' join_clause ')'
+// TODO: Add support for subqueries
+      ;
+
+join_clause
+    ::= table_or_subquery (join_operator table_or_subquery join_constraint?)+
+      ;
+
+join_operator
+    ::= inner_join
+//      | cross_join
+// TODO: Add support for cross join
+      | outer_join
+      ;
+
+// cross_join
+//    ::= ','
+//      | 'CROSS' 'JOIN'
+//      ;
+
+inner_join
+    ::= 'INNER'? 'JOIN'
+      ;
+
+outer_join
+    ::= outer_join_direction 'OUTER'? 'JOIN'
+      ;
+
+outer_join_direction
+    ::= 'LEFT'
+      | 'RIGHT'
+      | 'FULL'
+      ;
+
+join_constraint
+    ::= 'ON' expressions
+//      | 'USING' '(' column_name (',' column_name)* ')'
+// TODO: Add support for foreign keys
+      ;
+
+where_clause
+    ::= 'WHERE' expressions
+      ;
+
+result_columns
+    ::= '*'
+      | result_column (',' result_column)*
+      ;
+
+result_column
+    ::= column alias?
+      | '(' column alias? ')'
+      ;
+
+alias
+    ::= 'AS' identifier
+      ;
+
+column
+    ::= table_name '.' column_name
+      | column_name
+      ;
+
+column_name
+    ::= identifier
+      ;
+
+table_name
+    ::= identifier
+      ;
+
+identifier
+    ::= word
+      ;
+
+expressions
+    ::= expression (binary_operator expression)+
+      ;
+
+expression
+    ::= '(' expressions ')'
+      | column_name
+      | literal
+      ;
+
+binary_operator
+    ::= "*"
+      | "/"
+      | "+"
+      | "-"
+      | "<="
+      | "<"
+      | ">="
+      | ">"
+      | "="
+      | "!="
+      | "AND"
+      | "OR"
+      ;
+
+literal
+    ::= string
+      | number
+      | float
+      ;
+
+
+
+
+

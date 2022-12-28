@@ -1,24 +1,15 @@
-use sicql_compiler::remove;
-use sicql_engine::add;
-use sicql_fs::mult;
+// #![warn(missing_docs)] FIXME: todo!
+// FIXME: Remove
+#![allow(unused)]
 
-fn main() {
-    println!("Hello, world!");
-    println!("{}, {}, {}", add(1, 2), remove(2, 1), mult(2, 3));
-    println!("{}", add_one(1, 5));
-}
+use std::error::Error;
 
-fn add_one(left: usize, right: usize) -> usize {
-    left + right + 1
-}
+use clap::Parser;
 
-#[cfg(test)]
-mod repl {
-    use super::*;
+mod cli;
+mod config;
+mod error;
+mod prelude;
+mod server;
 
-    #[test]
-    fn repl_works() {
-        let result = add_one(2, 4);
-        assert_eq!(result, 7);
-    }
-}
+fn main() {}
